@@ -1,5 +1,5 @@
 <script setup>
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import Square from './Square.vue'
 
   const STATE_PLAY = 0
@@ -23,7 +23,21 @@
   // state
   const state = ref(STATE_PLAY)
   const squares = ref(Array(BOARD_SIZE).fill(null))
-  const statusString = ref('')
+
+  const _winner = ref(null)
+  const _line = ref(null)
+
+  const _statusString = computed(() => {
+    if (_winner.value) {
+      return STATE[state.value] + _winner.value
+    }
+    else if (isDraw(squares.value)) {
+      return STATE[state.value]
+    }
+    else {
+      return STATE[state.value] + nextPlayer(squares.value)
+    }
+  })
 
   //
   function reset() {
@@ -52,6 +66,7 @@
     return !countEmpty(squares)
   }
 
+  //
   function nextPlayer(squares) {
     return PLAYER[countFilled(squares) % 2]
   }
@@ -104,17 +119,17 @@
     squares.value[squareIndex] = player
 
     const { winner, line } = calculateWinner(squares.value)
-    if (winner) {
+    _winner.value = winner
+    _line.value = line
+
+    if (_winner.value) {
       state.value = STATE_WIN
-      statusString.value = STATE[state.value] + player
     }
     else if (isDraw(squares.value)) {
       state.value = STATE_DRAW
-      statusString.value = STATE[state.value]
     }
     else {
       state.value = STATE_PLAY
-      statusString.value = STATE[state.value] + nextPlayer(squares.value)
     }
  }
 
@@ -142,7 +157,8 @@
 
   <p>Squares: {{ squares }}</p>
   <p>State: {{ state }}</p>
-  <p>Status: {{ statusString }}</p>
+  <p>{{ _statusString }}</p>
+  <p>Line: {{ _line }}</p>
 </template>
 
 <style scoped>
