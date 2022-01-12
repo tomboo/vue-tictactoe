@@ -5,8 +5,6 @@
   const STATE_PLAY = 0
   const STATE_WIN = 1
   const STATE_DRAW = 2
-  const PLAYER_0 = 0
-  const PLAYER_1 = 1
   const BOARD_SIZE = 9
 
   const STATE = [
@@ -39,26 +37,24 @@
     }
   })
 
-  //
-  function reset() {
+  // TODO
+  function restart() {
     squares.fill(null)
 
   }
 
   //
-  function countEmpty(squares) {
-    let c = 0
-    for (let i = 0; i < BOARD_SIZE; i++) {
-      if (squares[i] === null) {
-        c++
-      }
-    }
-    return c;
+  function countEmpty(s) {
+    let count = 0
+    s.forEach(c => count += !c)
+    return count
   }
 
   //
-  function countFilled(squares) {
-    return BOARD_SIZE - countEmpty(squares)
+  function countFilled(s) {
+    let count = 0
+    s.forEach(c => count += !!c)
+    return count
   }
 
   //
@@ -84,20 +80,14 @@
       [2, 4, 6]
     ];
 
-    let winner = null;
-    let line = null;
-
     // test for winner
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-        // winner
-        winner = squares[a]
-        line = lines[i]
+        return { winner: squares[a], line: lines[i] }
       }
     }
-
-    return { winner , line }
+    return { winner: null , line: null }
   }
 
   //

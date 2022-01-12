@@ -7,4 +7,7 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 - [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
 
 ## Resources
-- [Tic Tac Toe](https://codepen.io/gaearon/pen/gWWZgR), Dan Abramov, React
+- [Create a Tic Tac Toe with Vue 3 and JavaScript](https://javascript.plainenglish.io/create-a-tic-tac-toe-with-vue-3-and-javascript-3cbf7ad6c7cf)
+### React
+- [Tutorial: Intro to React](https://reactjs.org/tutorial/tutorial.html)
+- [Tic-Tac-Toe (Dan Abramov)](https://codepen.io/gaearon/pen/gWWZgR)
