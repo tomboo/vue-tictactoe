@@ -154,8 +154,8 @@
     </div>
   </div>
 
-  <p>Squares: {{ _squares }}</p>
   <p>State: {{ _state }}</p>
+  <p>Squares: {{ _squares }}</p>
   <p>Status: {{ _statusString }}</p>
   <p>Line: {{ _line }}</p>
   <button v-on:click="restart">Restart</button>
