@@ -1,10 +1,10 @@
 <script setup>
   defineProps({
-    index: Number
+    index: String   // TODO: Should be of type Number, but this generates a warning
   })
 
   defineEmits([
-    'squareClick'
+    'squareClick'   // generated on click
   ])
 </script>
 

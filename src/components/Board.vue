@@ -39,10 +39,12 @@
     }
   })
 
-  // TODO
+  //
   function restart() {
-    _squares.fill(null)
-
+    _state.value = STATE_PLAY
+    _squares.value.fill(null)
+    _winner.value = null
+    _line.value = null
   }
 
   //
@@ -95,14 +97,14 @@
   //
   function handleClick(squareIndex) {
     console.log('handleClick: ', squareIndex)
-    if ( _squares.value[squareIndex]) {
-      console.log('Ignore Click (square filled): ', squareIndex)
-      return
+    if (_squares.value[squareIndex]) {
+      console.log('ignore click (square filled): ', squareIndex)
+      return    // ignore click, square filled
     }
 
     if (_state.value !== STATE_PLAY) {
-      console.log('Ignore Click (game stopped): ', squareIndex)
-      return
+      console.log('ignore click (game terminated): ', squareIndex)
+      return    // ignore click, game terminated
     }
 
     // new move
@@ -110,18 +112,20 @@
     const player = nextPlayer(_squares.value)
     _squares.value[squareIndex] = player
 
+    // test for winner
     const { winner, line } = calculateWinner(_squares.value)
     _winner.value = winner
     _line.value = line
 
+    // update state
     if (_winner.value) {
-      _state.value = STATE_WIN
+      _state.value = STATE_WIN    // non-terminal state
     }
     else if (isDraw(_squares.value)) {
-      _state.value = STATE_DRAW
+      _state.value = STATE_DRAW   // terminal state
     }
     else {
-      _state.value = STATE_PLAY
+      _state.value = STATE_PLAY   // terminal state
     }
  }
 
@@ -149,8 +153,9 @@
 
   <p>Squares: {{ _squares }}</p>
   <p>State: {{ _state }}</p>
-  <p>{{ _statusString }}</p>
+  <p>Status: {{ _statusString }}</p>
   <p>Line: {{ _line }}</p>
+  <button v-on:click="restart">Restart</button>
 </template>
 
 <style scoped>
