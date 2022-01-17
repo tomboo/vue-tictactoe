@@ -2,31 +2,34 @@
   import { ref, computed } from 'vue'
   import Square from './Square.vue'
 
-  // state id
+  // State IDs
   const STATE_PLAY = 0    // non-terminal state
   const STATE_WIN = 1     // terminal state -- win
   const STATE_DRAW = 2    // terminal state -- draw
 
-  // constants
+  // Constants
   const BOARD_SIZE = 9
 
+  // Status strings
   const STATUS = [
     "Next Player: ",  // STATE_PLAY (0)
     "Winner: ",       // STATE_WIN (1)
     "Draw"            // STATE_DRAW (2)
   ]
 
+  // Player names
   const PLAYER = [
     "X",              // PLAYER_0 (0)
     "O"               // PLAYER_1 (1)
   ]
 
-  // state
+  // State
   const _state = ref(STATE_PLAY)   // STATE_PLAY, STATE_WIN, STATE_DRAW
   const _squares = ref(Array(BOARD_SIZE).fill(null))   // [ "0","X",null, "O","X",null, null,"X",null]
   const _winner = ref(null)       // "X" | "O" | null (no winner)
   const _line = ref(null)         // [1, 4, 7] | null (no winner)
 
+  // Computed properties
   const _statusString = computed(() => {
     if (_winner.value) {
       return STATUS[_state.value] + _winner.value
@@ -39,7 +42,7 @@
     }
   })
 
-  //
+  // Restart game
   function restart() {
     _state.value = STATE_PLAY
     _squares.value.fill(null)
@@ -47,31 +50,31 @@
     _line.value = null
   }
 
-  //
+  // Count empty squares
   function countEmpty(squares) {
     let count = 0
     squares.forEach(c => count += !c)
     return count
   }
 
-  //
+  // Count filled squares
   function countFilled(squares) {
     let count = 0
     squares.forEach(c => count += !!c)
     return count
   }
 
-  //
+  // Test for draw
   function isDraw(squares) {
     return !countEmpty(squares)
   }
 
-  //
+  // Return next player name
   function nextPlayer(squares) {
     return PLAYER[countFilled(squares) % 2]
   }
 
-  //
+  // Test for winner
   function calculateWinner(squares) {
     const lines = [
       [0, 1, 2],
@@ -94,7 +97,7 @@
     return { winner: null , line: null }
   }
 
-  //
+  // Handle click
   function handleClick(squareIndex) {
     console.log('handleClick: ', squareIndex)
     if (_squares.value[squareIndex]) {
