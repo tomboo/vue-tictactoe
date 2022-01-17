@@ -2,12 +2,15 @@
   import { ref, computed } from 'vue'
   import Square from './Square.vue'
 
-  const STATE_PLAY = 0
-  const STATE_WIN = 1
-  const STATE_DRAW = 2
+  // state id
+  const STATE_PLAY = 0    // non-terminal state
+  const STATE_WIN = 1     // terminal state -- win
+  const STATE_DRAW = 2    // terminal state -- draw
+
+  // constants
   const BOARD_SIZE = 9
 
-  const STATE = [
+  const STATUS = [
     "Next Player: ",  // STATE_PLAY (0)
     "Winner: ",       // STATE_WIN (1)
     "Draw"            // STATE_DRAW (2)
@@ -19,41 +22,40 @@
   ]
 
   // state
-  const state = ref(STATE_PLAY)
-  const squares = ref(Array(BOARD_SIZE).fill(null))
-
-  const _winner = ref(null)
-  const _line = ref(null)
+  const _state = ref(STATE_PLAY)   // STATE_PLAY, STATE_WIN, STATE_DRAW
+  const _squares = ref(Array(BOARD_SIZE).fill(null))   // [ "0","X",null, "O","X",null, null,"X",null]
+  const _winner = ref(null)       // "X" | "O" | null (no winner)
+  const _line = ref(null)         // [1, 4, 7] | null (no winner)
 
   const _statusString = computed(() => {
     if (_winner.value) {
-      return STATE[state.value] + _winner.value
+      return STATUS[_state.value] + _winner.value
     }
-    else if (isDraw(squares.value)) {
-      return STATE[state.value]
+    else if (isDraw(_squares.value)) {
+      return STATUS[_state.value]
     }
     else {
-      return STATE[state.value] + nextPlayer(squares.value)
+      return STATUS[_state.value] + nextPlayer(_squares.value)
     }
   })
 
   // TODO
   function restart() {
-    squares.fill(null)
+    _squares.fill(null)
 
   }
 
   //
-  function countEmpty(s) {
+  function countEmpty(squares) {
     let count = 0
-    s.forEach(c => count += !c)
+    squares.forEach(c => count += !c)
     return count
   }
 
   //
-  function countFilled(s) {
+  function countFilled(squares) {
     let count = 0
-    s.forEach(c => count += !!c)
+    squares.forEach(c => count += !!c)
     return count
   }
 
@@ -93,33 +95,33 @@
   //
   function handleClick(squareIndex) {
     console.log('handleClick: ', squareIndex)
-    if (squares.value[squareIndex]) {
+    if ( _squares.value[squareIndex]) {
       console.log('Ignore Click (square filled): ', squareIndex)
       return
     }
 
-    if (state.value !== STATE_PLAY) {
+    if (_state.value !== STATE_PLAY) {
       console.log('Ignore Click (game stopped): ', squareIndex)
       return
     }
 
     // new move
     console.log('New Move: ', squareIndex)
-    const player = nextPlayer(squares.value)
-    squares.value[squareIndex] = player
+    const player = nextPlayer(_squares.value)
+    _squares.value[squareIndex] = player
 
-    const { winner, line } = calculateWinner(squares.value)
+    const { winner, line } = calculateWinner(_squares.value)
     _winner.value = winner
     _line.value = line
 
     if (_winner.value) {
-      state.value = STATE_WIN
+      _state.value = STATE_WIN
     }
-    else if (isDraw(squares.value)) {
-      state.value = STATE_DRAW
+    else if (isDraw(_squares.value)) {
+      _state.value = STATE_DRAW
     }
     else {
-      state.value = STATE_PLAY
+      _state.value = STATE_PLAY
     }
  }
 
@@ -129,24 +131,24 @@
   <h2>Board</h2>
   <div>
     <div class="row">
-      <Square index=0 v-on:squareClick="handleClick">{{ squares[0] }}</Square>
-      <Square index=1 v-on:squareClick="handleClick">{{ squares[1] }}</Square>
-      <Square index=2 v-on:squareClick="handleClick">{{ squares[2] }}</Square>
+      <Square index=0 v-on:squareClick="handleClick">{{ _squares[0] }}</Square>
+      <Square index=1 v-on:squareClick="handleClick">{{ _squares[1] }}</Square>
+      <Square index=2 v-on:squareClick="handleClick">{{ _squares[2] }}</Square>
     </div>
     <div class="row">
-      <Square index=3 v-on:squareClick="handleClick">{{ squares[3] }}</Square>
-      <Square index=4 v-on:squareClick="handleClick">{{ squares[4] }}</Square>
-      <Square index=5 v-on:squareClick="handleClick">{{ squares[5] }}</Square>
+      <Square index=3 v-on:squareClick="handleClick">{{ _squares[3] }}</Square>
+      <Square index=4 v-on:squareClick="handleClick">{{ _squares[4] }}</Square>
+      <Square index=5 v-on:squareClick="handleClick">{{ _squares[5] }}</Square>
     </div>
     <div class="row">
-      <Square index=6 v-on:squareClick="handleClick">{{ squares[6] }}</Square>
-      <Square index=7 v-on:squareClick="handleClick">{{ squares[7] }}</Square>
-      <Square index=8 v-on:squareClick="handleClick">{{ squares[8] }}</Square>
+      <Square index=6 v-on:squareClick="handleClick">{{ _squares[6] }}</Square>
+      <Square index=7 v-on:squareClick="handleClick">{{ _squares[7] }}</Square>
+      <Square index=8 v-on:squareClick="handleClick">{{ _squares[8] }}</Square>
     </div>
   </div>
 
-  <p>Squares: {{ squares }}</p>
-  <p>State: {{ state }}</p>
+  <p>Squares: {{ _squares }}</p>
+  <p>State: {{ _state }}</p>
   <p>{{ _statusString }}</p>
   <p>Line: {{ _line }}</p>
 </template>
