@@ -1,6 +1,7 @@
 <script setup>
   import { ref } from 'vue'
   import Board from './Board.vue'
+  import Toggle from './Toggle.vue'
 
   const nextMove = ref(0)
 
@@ -17,6 +18,7 @@
 <template>
   <h2>Game</h2>
   <Board />
+  <Toggle />
 </template>
 
 <style scoped>
